@@ -1,0 +1,14 @@
+{
+  "name": "comp-future-server",
+  "version": "1.0.0",
+  "description": "Demo server for Java CompletableFuture lecture",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Daniel Persson",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
