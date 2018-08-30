@@ -2,6 +2,8 @@ const express = require('express');
 
 module.exports = (router = express.Router()) => {
 
+  let customerIndex = 0;
+
   const customers = [
     {id: 1, name: 'Customer1' },
     {id: 2, name: 'Customer2' }
@@ -9,7 +11,11 @@ module.exports = (router = express.Router()) => {
 
   router.get('/customers', (req, res) => {
     setTimeout(() =>  {
-      res.status(200).json(customers);
+      customerIndex += 2;
+      res.status(200).json([
+        {id: customerIndex, name: `Customer ${customerIndex}` },
+        {id: customerIndex+1, name: `Customer ${customerIndex+1}` }
+      ]);
     }, 500);
   });
 
