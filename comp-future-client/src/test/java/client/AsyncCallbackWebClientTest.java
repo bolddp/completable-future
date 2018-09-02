@@ -14,8 +14,9 @@ import org.slf4j.LoggerFactory;
 public class AsyncCallbackWebClientTest {
 
     private static Logger LOG = LoggerFactory.getLogger(AsyncCallbackWebClientTest.class);
-    
-    private Executor executor = new ThreadPoolExecutor(5, 5, 10L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10000));
+
+    private final Executor executor = new ThreadPoolExecutor(5, 5, 10L, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>(10000));
 
     private AsyncCallbackWebClient webClient;
 
@@ -23,25 +24,26 @@ public class AsyncCallbackWebClientTest {
     public void setup() {
         webClient = new AsyncCallbackWebClient();
     }
-    
+
     @Test
     public void shouldGetAsManyCustomersAsPossible() throws InterruptedException {
-        int callCount = 100;
-        long startTick = System.currentTimeMillis();
-        
-        CountDownLatch latch = new CountDownLatch(callCount); 
+        final int callCount = 100;
+        final long startTick = System.currentTimeMillis();
 
-        for (int a = 0;a<callCount;a++) {
+        final CountDownLatch latch = new CountDownLatch(callCount);
+
+        for (int a = 0; a < callCount; a++) {
             final int index = a;
             executor.execute(() -> {
                 LOG.info("Call #{} at {} ms", index, System.currentTimeMillis() - startTick);
                 webClient.getAllCustomers(customers -> {
-                    LOG.info("Call #{} succeeded at {} ms... Customer #{}", index, System.currentTimeMillis() - startTick, customers[0].getId());
+                    LOG.info("Call #{} succeeded at {} ms... Customer #{}", index, System.currentTimeMillis() - startTick,
+                            customers[0].getId());
                     latch.countDown();
                 });
             });
         }
-        
+
         latch.await(callCount * 1500L, TimeUnit.MILLISECONDS);
     }
 }

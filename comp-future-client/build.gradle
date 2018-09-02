@@ -24,6 +24,10 @@ sourceSets {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.3'
+}
+
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
@@ -39,5 +43,6 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 	testImplementation 'com.sun.jersey:jersey-client:1.19.4'
+	testImplementation 'org.assertj:assertj-core:3.11.1'
 }
 

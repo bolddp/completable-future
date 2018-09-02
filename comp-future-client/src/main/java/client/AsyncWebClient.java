@@ -1,6 +1,6 @@
 package client;
 
-import static org.asynchttpclient.Dsl.*;
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -22,39 +22,39 @@ public class AsyncWebClient {
     private static final String USER_AGENT = "DemoClient/1.0";
 
     private static AsyncHttpClient asyncHttpClient;
-    
-    private String buildFullUrl(String path) {
+
+    private String buildFullUrl(final String path) {
         return String.format("%s%s", BASE_URL, path);
     }
-    
+
     static {
         asyncHttpClient = asyncHttpClient();
     }
-    
-    private <T> T map(String json,  Class<T> valueType)  {
+
+    private <T> T map(final String json, final Class<T> valueType) {
         try {
             return Json.mapper().readValue(json, valueType);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new WebApplicationException(e, HttpURLConnection.HTTP_INTERNAL_ERROR);
         }
     }
 
-    private CompletableFuture<String> get(String url) {
+    private CompletableFuture<String> get(final String url) {
         final CompletableFuture<String> result = new CompletableFuture<>();
-        
+
         final ListenableFuture<Response> requestFuture = asyncHttpClient.prepareGet(url).execute();
         requestFuture.addListener(() -> {
             try {
-                Response response = requestFuture.get();
-                String responseJson = response.getResponseBody();
+                final Response response = requestFuture.get();
+                final String responseJson = response.getResponseBody();
                 result.complete(responseJson);
-            } catch (InterruptedException | ExecutionException e){
+            } catch (InterruptedException | ExecutionException e) {
                 throw new WebApplicationException(e, HttpURLConnection.HTTP_INTERNAL_ERROR);
             }
-        }, null); 
+        }, null);
         return result;
     }
-    
+
     public CompletableFuture<Customer[]> getAllCustomers() {
         return get(buildFullUrl("/customers"))
                 .thenApplyAsync(strJson -> map(strJson, Customer[].class));
