@@ -8,6 +8,8 @@ public class Customer {
     private int id;
     @JsonProperty
     private String name;
+    @JsonProperty
+    private Address address;
 
     public Customer() {
         // Deserialization
@@ -24,5 +26,13 @@ public class Customer {
 
     public String getName() {
         return name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

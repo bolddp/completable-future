@@ -1,11 +1,28 @@
 package services.customer;
+
+import entity.Address;
+import entity.Customer;
+import entity.Scope;
+import entity.Token;
+import repositories.customer.SyncCustomerRepository;
+import services.security.SyncSecurityService;
+
 public class SyncCustomerService {
+
+  private SyncSecurityService securityService;
+  private SyncCustomerRepository customerRepository;
+
+  private Customer attachAddress(Customer customer, Address address) {
+    return customer;
+  }
+
   public Customer updateCustomerAddress(String customerId, Address address, Token accessToken) {
-    UserScope scope = securityService.authenticate(accessToken);
+    Scope scope = securityService.authenticate(accessToken);
     Customer customer = customerRepository.getById(customerId);
     if (customer == null) {
-      throw new ClientRequestException(“Customer not found”);
+      throw new RuntimeException("Customer not found");
     }
+    securityService.authorize(customer, "Customer.Insert", scope);
     Customer updatedCustomer = attachAddress(customer, address);
     customerRepository.insertOrUpdate(customerId, updatedCustomer);
 
