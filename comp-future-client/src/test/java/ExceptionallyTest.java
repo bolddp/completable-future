@@ -1,4 +1,3 @@
-package client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,6 +9,13 @@ import entity.Customer;
 
 public class ExceptionallyTest {
 
+    private CompletableFuture<Customer> getCustomer() {
+        return CompletableFuture.supplyAsync(() -> {
+            throw new RuntimeException("Customer not found");
+            // return new Customer(1, "One");
+        });
+    }
+
     @Test
     public void shouldCatchInExceptionally() {
         getCustomer()
@@ -17,11 +23,7 @@ public class ExceptionallyTest {
                     assertThat(customer.getId()).isEqualTo(1);
                 })
                 .exceptionally(e -> {
-                    throw new IllegalArgumentException("Failed");
+                    throw new IllegalArgumentException("Failed!", e);
                 });
-    }
-
-    private CompletableFuture<Customer> getCustomer() {
-        return CompletableFuture.completedFuture(new Customer(1, "One"));
     }
 }
