@@ -12,11 +12,16 @@ public class SyncCustomerService {
   private SyncSecurityService securityService;
   private SyncCustomerRepository customerRepository;
 
+  public SyncCustomerService(SyncSecurityService securityService, SyncCustomerRepository customerRepository) {
+    this.securityService = securityService;
+    this.customerRepository = customerRepository;
+  }
+
   private Customer attachAddress(Customer customer, Address address) {
     return customer;
   }
 
-  public Customer updateCustomerAddress(String customerId, Address address, Token accessToken) {
+  public Customer updateCustomerAddress(int customerId, Address address, Token accessToken) {
     Scope scope = securityService.authenticate(accessToken);
     Customer customer = customerRepository.getById(customerId);
     if (customer == null) {

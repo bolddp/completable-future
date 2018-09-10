@@ -1,15 +1,21 @@
 package repositories.customer;
 
+import java.util.Arrays;
+
+import client.SyncWebClient;
 import entity.Customer;
 
 public class SyncCustomerRepository {
 
-    public Customer getById(String customerId) {
-        return new Customer(1, "One");
-    }
+  private SyncWebClient webClient;
+  
+  public Customer getById(int customerId) {
+    return Arrays.stream(webClient.getAllCustomers())
+        .filter(x -> x.getId() == customerId).findFirst().orElse(null);
+  }
 
-    public void insertOrUpdate(String customerId, Customer updatedCustomer) {
-        // TBD
-    }
+  public Customer insertOrUpdate(int customerId, Customer updatedCustomer) {
+    return updatedCustomer;
+  }
 
 }
