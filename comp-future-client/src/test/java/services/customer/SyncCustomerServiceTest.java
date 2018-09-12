@@ -4,8 +4,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.concurrent.ForkJoinPool;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,13 +50,17 @@ public class SyncCustomerServiceTest {
 
     when(securityService.authenticate(eq(accessToken))).thenReturn(scope);
     when(customerRepository.getById(eq(CUSTOMER_ID))).thenReturn(updatedCustomer);
+    when(customerRepository.insertOrUpdate(eq(CUSTOMER_ID), eq(updatedCustomer))).thenReturn(updatedCustomer);
+    // when(securityService.authorize(eq(updatedCustomer), any(String.class), eq(scope))).thenReturn(null);
+    
+    when(updatedCustomer.getName()).thenReturn("name");
 
     sut.updateCustomerAddress(CUSTOMER_ID , address, accessToken);
    
     verify(securityService).authenticate(eq(accessToken));
-    verify(customerRepository.insertOrUpdate(eq(CUSTOMER_ID), updatedCustomerCaptor.capture()));
+    verify(customerRepository).insertOrUpdate(eq(CUSTOMER_ID), updatedCustomerCaptor.capture());
     
-    Assert.assertEquals(address, updatedCustomerCaptor.getValue().getAddress());
+    Assert.assertEquals(address.getName(), updatedCustomerCaptor.getValue().getName());
   }
 
 }

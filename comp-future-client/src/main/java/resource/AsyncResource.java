@@ -13,20 +13,21 @@ import entity.Customer;
 import entity.Token;
 import mapper.CustomerDto;
 import mapper.CustomerMapper;
-import services.customer.FutureFinishedCustomerService;
+import services.customer.FutureCustomerService;
 
 @Path("/async")
 public class AsyncResource {
 
-    private FutureFinishedCustomerService customerService;
+    private FutureCustomerService customerService;
     private CustomerMapper customerMapper;
 
     @POST
     public void postCustomerAddress(@PathParam("customerId") final int customerId, final Address address,
             @HeaderParam("Authorization") final Token accessToken, @Suspended final AsyncResponse response) {
         customerService.updateCustomerAddress(customerId, address, accessToken)
-                .thenAcceptAsync(updatedCustomer -> customerMapper.toDto(updatedCustomer))
-                .thenAcceptAsync(customerDto -> response.resume(customerDto)).exceptionally(e -> {
+                .thenApplyAsync(updatedCustomer -> customerMapper.toDto(updatedCustomer))
+                .thenAcceptAsync(customerDto -> response.resume(customerDto))
+                .exceptionally(e -> {
                     response.resume(e);
                     return null;
                 });
