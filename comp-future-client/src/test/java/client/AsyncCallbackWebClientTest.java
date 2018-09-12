@@ -40,6 +40,8 @@ public class AsyncCallbackWebClientTest {
                     LOG.info("Call #{} succeeded at {} ms... Customer #{}", index, System.currentTimeMillis() - startTick,
                             customers[0].getId());
                     latch.countDown();
+                }, error -> {
+                    LOG.error("Call failed", error);
                 });
             });
         }

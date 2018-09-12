@@ -32,6 +32,7 @@ public class AsyncResource {
                 });
     }
 
+    @POST
     public CustomerDto postCustomerAddressSync(@PathParam("customerId") final int customerId, final Address address,
             @HeaderParam("Authorization") final Token accessToken) {
         try {
